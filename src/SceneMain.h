@@ -6,6 +6,7 @@
 
 #include "Scene.h"
 #include "Object.h"
+#include <list>
 
 class Game;
 
@@ -22,9 +23,21 @@ public:
 
     void keyboardControl(float deltaTime);
 
+    void shootBullet(); // 发射子弹
+
+    void updateBullet(float deltaTime); // 更新子弹
+
+    void renderBullet(); // 渲染子弹
+
 private:
     Player player;
     Game &game;
+
+    // 子弹
+    Bullet bullet;
+
+    // 子弹列表
+    std::list<Bullet*> bullets;
 
 };
 

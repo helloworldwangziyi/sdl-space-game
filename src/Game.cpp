@@ -48,7 +48,6 @@ void Game::clean()
     if(currentScene != nullptr)
     {
         currentScene->clean();
-        delete currentScene;
     }
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
