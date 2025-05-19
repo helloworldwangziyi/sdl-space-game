@@ -1,0 +1,7 @@
+# ninja log v6
+3	459	7687577959142221	CMakeFiles/SDLshooter-Windows-Debug.dir/main.cpp.obj	8a35488156aeeea1
+15	470	7687667607971353	CMakeFiles/SDLshooter-Windows-Debug.dir/src/main.cpp.obj	5cdfe4f54bbe0cfe
+470	598	7687667612529582	C:/Users/Administrator/Desktop/SDLshooter/SDLshooter-Windows-Debug.exe	8b7f5a380265f0d3
+1	222	7690149144468652	build.ninja	2c532286475db67e
+13	331	7687667607961328	CMakeFiles/SDLshooter-Windows-Debug.dir/src/SceneMain.cpp.obj	391e7eb11d8cb6fd
+11	336	7687667607941320	CMakeFiles/SDLshooter-Windows-Debug.dir/src/Game.cpp.obj	a7a75d104c986be4

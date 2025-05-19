@@ -1,0 +1,3 @@
+C:/Users/Administrator/Desktop/SDLshooter/build/build/CMakeFiles/SDLshooter-Windows-Debug.dir
+C:/Users/Administrator/Desktop/SDLshooter/build/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Administrator/Desktop/SDLshooter/build/build/CMakeFiles/ZERO_CHECK.dir

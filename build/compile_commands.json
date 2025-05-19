@@ -1,0 +1,20 @@
+[
+{
+  "directory": "C:/Users/Administrator/Desktop/SDLshooter/build",
+  "command": "C:\\Users\\Administrator\\Files\\msys\\mingw64\\bin\\c++.exe -isystem C:/Users/Administrator/Files/SDL2/SDL2/cmake/../include -g -std=gnu++17 -Wall -g -o CMakeFiles\\SDLshooter-Windows-Debug.dir\\src\\Game.cpp.obj -c C:\\Users\\Administrator\\Desktop\\SDLshooter\\src\\Game.cpp",
+  "file": "C:\\Users\\Administrator\\Desktop\\SDLshooter\\src\\Game.cpp",
+  "output": "CMakeFiles\\SDLshooter-Windows-Debug.dir\\src\\Game.cpp.obj"
+},
+{
+  "directory": "C:/Users/Administrator/Desktop/SDLshooter/build",
+  "command": "C:\\Users\\Administrator\\Files\\msys\\mingw64\\bin\\c++.exe -isystem C:/Users/Administrator/Files/SDL2/SDL2/cmake/../include -g -std=gnu++17 -Wall -g -o CMakeFiles\\SDLshooter-Windows-Debug.dir\\src\\SceneMain.cpp.obj -c C:\\Users\\Administrator\\Desktop\\SDLshooter\\src\\SceneMain.cpp",
+  "file": "C:\\Users\\Administrator\\Desktop\\SDLshooter\\src\\SceneMain.cpp",
+  "output": "CMakeFiles\\SDLshooter-Windows-Debug.dir\\src\\SceneMain.cpp.obj"
+},
+{
+  "directory": "C:/Users/Administrator/Desktop/SDLshooter/build",
+  "command": "C:\\Users\\Administrator\\Files\\msys\\mingw64\\bin\\c++.exe -isystem C:/Users/Administrator/Files/SDL2/SDL2/cmake/../include -g -std=gnu++17 -Wall -g -o CMakeFiles\\SDLshooter-Windows-Debug.dir\\src\\main.cpp.obj -c C:\\Users\\Administrator\\Desktop\\SDLshooter\\src\\main.cpp",
+  "file": "C:\\Users\\Administrator\\Desktop\\SDLshooter\\src\\main.cpp",
+  "output": "CMakeFiles\\SDLshooter-Windows-Debug.dir\\src\\main.cpp.obj"
+}
+]

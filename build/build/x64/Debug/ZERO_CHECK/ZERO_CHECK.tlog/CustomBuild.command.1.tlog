@@ -1,0 +1,10 @@
+^C:\USERS\ADMINISTRATOR\DESKTOP\SDLSHOOTER\BUILD\BUILD\CMAKEFILES\C2FF86CCAACC1A1448613433F9C24BEA\GENERATE.STAMP.RULE
+setlocal
+C:\Users\Administrator\Files\cmake\bin\cmake.exe -SC:/Users/Administrator/Desktop/SDLshooter -BC:/Users/Administrator/Desktop/SDLshooter/build/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/Administrator/Desktop/SDLshooter/build/build/SDLshooter.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
