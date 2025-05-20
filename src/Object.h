@@ -22,4 +22,12 @@ struct Bullet{
     int speed = 400; // 子弹移动速度
 };
 
+struct Enemy{
+    SDL_Texture* texture = nullptr;
+    SDL_FPoint position = {0, 0};
+    int width = 0;
+    int height = 0;
+    int speed = 200; // 敌机移动速度
+};
+
 #endif // OBJECT_H

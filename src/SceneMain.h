@@ -7,6 +7,7 @@
 #include "Scene.h"
 #include "Object.h"
 #include <list>
+#include <random>
 
 class Game;
 
@@ -24,10 +25,12 @@ public:
     void keyboardControl(float deltaTime);
 
     void shootBullet(); // 发射子弹
-
     void updateBullet(float deltaTime); // 更新子弹
-
     void renderBullet(); // 渲染子弹
+
+    void spawnEnemy(); // 生成敌机
+    void updateEnemy(float deltaTime); // 更新敌机的位置
+    void renderEnemy(); // 渲染敌机
 
 private:
     Player player;
@@ -35,9 +38,16 @@ private:
 
     // 子弹
     Bullet bullet;
-
     // 子弹列表
     std::list<Bullet*> bullets;
+
+    std::mt19937 gen; // 随机数生成器
+    std::uniform_real_distribution<float> dis; // 均匀分布
+
+    // 敌机
+    Enemy enemy;
+    // 敌机列表
+    std::list<Enemy*> enemies;
 
 };
 
