@@ -8,6 +8,7 @@
 #include<iostream>
 #include "Game.h"
 #include "SceneMain.h"
+#include <vector>
 int main(int , char **)
 {
     Game &game = Game::getInstance();

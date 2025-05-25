@@ -32,6 +32,13 @@ public:
     void updateEnemy(float deltaTime); // 更新敌机的位置
     void renderEnemy(); // 渲染敌机
 
+    void renderEnemyBullet(); // 渲染敌机子弹
+    void updateEnemyBullet(float deltaTime); // 更新敌机子弹
+    void EnemyShootBullet(Enemy* enemy); // 敌机发射子弹
+    SDL_FPoint getDirection(Enemy* enemy); // 计算子弹方向
+
+
+
 private:
     Player player;
     Game &game;
@@ -48,6 +55,11 @@ private:
     Enemy enemy;
     // 敌机列表
     std::list<Enemy*> enemies;
+
+    // 敌机子弹
+    EnemyBullet enemyBullet;
+    // 敌机子弹列表
+    std::list<EnemyBullet*> enemyBullets;
 
 };
 

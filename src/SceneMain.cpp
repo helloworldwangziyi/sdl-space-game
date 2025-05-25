@@ -21,6 +21,7 @@ void SceneMain::Update(float deltaTime)
     updateBullet(deltaTime);
     spawnEnemy();           // 生成敌机
     updateEnemy(deltaTime); // 更新敌机
+    updateEnemyBullet(deltaTime); // 更新敌机子弹
 }
 
 void SceneMain::Render()
@@ -36,6 +37,9 @@ void SceneMain::Render()
 
     // 渲染敌机
     renderEnemy();
+
+    // 渲染敌机子弹
+    renderEnemyBullet();
 }
 
 void SceneMain::handleEvent(SDL_Event *event)
@@ -72,6 +76,12 @@ void SceneMain::Init()
     SDL_QueryTexture(enemy.texture, NULL, NULL, &enemy.width, &enemy.height);
     enemy.width /= 4;
     enemy.height /= 4;
+
+    // 初始化敌机子弹
+    enemyBullet.texture = IMG_LoadTexture(game.getRenderer(), "assets/assets/image/bullet-1.png");
+    SDL_QueryTexture(enemyBullet.texture, NULL, NULL, &enemyBullet.width, &enemyBullet.height);
+    enemyBullet.width /= 4;
+    enemyBullet.height /= 4;
 }
 
 void SceneMain::clean()
@@ -108,6 +118,23 @@ void SceneMain::clean()
     if (enemy.texture != nullptr)
     {
         SDL_DestroyTexture(enemy.texture);
+    }
+
+    // 清理敌机子弹
+    for(auto &it : enemyBullets)
+    {
+        if(it != nullptr)
+        {
+            delete it;
+        }
+    }
+    enemyBullets.clear();
+
+    // 清理敌机子弹纹理
+    if (enemyBullet.texture != nullptr)
+    {
+        SDL_DestroyTexture(enemyBullet.texture);
+        enemyBullet.texture = nullptr;
     }
 }
 
@@ -225,6 +252,7 @@ void SceneMain::spawnEnemy()
 
 void SceneMain::updateEnemy(float deltaTime)
 {
+    auto currentTime = SDL_GetTicks();
     for (auto it = enemies.begin(); it != enemies.end();)
     {
         auto cur_enemy = *it;
@@ -240,6 +268,12 @@ void SceneMain::updateEnemy(float deltaTime)
         }
         else
         {
+            // 检查冷却时间，决定是否发射子弹
+            if(currentTime - cur_enemy->lastFireTime > cur_enemy->coolDown)
+            {
+                EnemyShootBullet(cur_enemy);
+                cur_enemy->lastFireTime = currentTime;
+            }
             ++it;
         }
     }
@@ -253,3 +287,77 @@ void SceneMain::renderEnemy()
         SDL_RenderCopy(game.getRenderer(), it->texture, nullptr, &enemyRect);
     }
 }
+
+void SceneMain::EnemyShootBullet(Enemy* enemy)
+{
+    // 创建敌机子弹
+    EnemyBullet* newEnemyBullet = new EnemyBullet(enemyBullet);
+    
+    // 设置子弹初始位置为敌机中心
+    newEnemyBullet->position.x = enemy->position.x + enemy->width / 2 - newEnemyBullet->width / 2;
+    newEnemyBullet->position.y = enemy->position.y + enemy->height / 2 - newEnemyBullet->height / 2;
+
+    // 计算子弹方向
+    newEnemyBullet->direction = getDirection(enemy);
+
+    // 添加到敌机的子弹列表
+    enemyBullets.push_back(newEnemyBullet);
+     
+}
+
+SDL_FPoint SceneMain::getDirection(Enemy* enemy)
+{
+    auto x = (player.position.x + player.width / 2) - enemy->position.x - enemy->width / 2;
+    auto y = (player.position.y + player.height / 2) - enemy->position.y - enemy->height / 2;
+    auto distance = sqrt(x * x + y * y);
+
+    // 归一化方向向量   
+    x /= distance;
+    y /= distance;
+
+    return SDL_FPoint{x, y};
+}
+
+// 更新敌机子弹
+void SceneMain::updateEnemyBullet(float deltaTime)
+{
+    auto margin = 32;
+    for(auto it = enemyBullets.begin(); it != enemyBullets.end();)
+    {
+        auto cur_enemy_bullet = *it;
+
+        // 根据方向更新子弹的位置
+        cur_enemy_bullet->position.x += cur_enemy_bullet->direction.x * cur_enemy_bullet->speed * deltaTime;
+        cur_enemy_bullet->position.y += cur_enemy_bullet->direction.y * cur_enemy_bullet->speed * deltaTime;
+
+        // 检查子弹是否飞出屏幕
+        if(cur_enemy_bullet->position.y - margin > game.getWindowHeight() || 
+        cur_enemy_bullet->position.x - margin > game.getWindowWidth() ||
+        cur_enemy_bullet->position.y + margin < 0 ||
+        cur_enemy_bullet->position.x + margin < 0)
+        {
+            it = enemyBullets.erase(it);
+            delete cur_enemy_bullet;
+        }
+        else
+        {
+            ++it;
+        }
+    }
+}
+
+
+void SceneMain::renderEnemyBullet()
+{
+    for(auto it : enemyBullets)
+    {
+        SDL_Rect enemyBulletRect = {static_cast<int>(it->position.x), static_cast<int>(it->position.y), it->width, it->height};
+
+        // 计算子弹旋转的角度
+        float angle = atan2(it->direction.y, it->direction.x) * 180 / M_PI - 90;
+
+        // 使用带旋转参数的渲染函数
+        SDL_RenderCopyEx(game.getRenderer(), it->texture, nullptr, &enemyBulletRect, angle, nullptr, SDL_FLIP_NONE);
+    }
+}
+
