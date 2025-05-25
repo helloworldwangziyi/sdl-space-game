@@ -24,6 +24,8 @@ public:
 
     void keyboardControl(float deltaTime);
 
+    void updatePlayer(float deltaTime); // 更新玩家
+
     void shootBullet(); // 发射子弹
     void updateBullet(float deltaTime); // 更新子弹
     void renderBullet(); // 渲染子弹
@@ -37,6 +39,7 @@ public:
     void EnemyShootBullet(Enemy* enemy); // 敌机发射子弹
     SDL_FPoint getDirection(Enemy* enemy); // 计算子弹方向
 
+    void enemyExplode(Enemy* enemy);      // 敌机爆炸效果
 
 
 private:
@@ -60,6 +63,8 @@ private:
     EnemyBullet enemyBullet;
     // 敌机子弹列表
     std::list<EnemyBullet*> enemyBullets;
+
+    bool isDead = false; // 玩家是否死亡
 
 };
 

@@ -22,16 +22,11 @@ void SceneMain::Update(float deltaTime)
     spawnEnemy();           // 生成敌机
     updateEnemy(deltaTime); // 更新敌机
     updateEnemyBullet(deltaTime); // 更新敌机子弹
+    updatePlayer(deltaTime); // 更新玩家
 }
 
 void SceneMain::Render()
 {
-
-    // 渲染玩家
-    SDL_Rect playerRect = {static_cast<int>(player.position.x), static_cast<int>(player.position.y), player.width, player.height};
-    SDL_RenderCopy(game.getRenderer(), player.texture, nullptr, &playerRect);
-    SDL_RenderCopy(game.getRenderer(), player.texture, nullptr, &playerRect);
-
     // 渲染子弹
     renderBullet();
 
@@ -40,6 +35,13 @@ void SceneMain::Render()
 
     // 渲染敌机子弹
     renderEnemyBullet();
+
+    // 渲染玩家
+    if(!isDead)
+    {
+        SDL_Rect playerRect = {static_cast<int>(player.position.x), static_cast<int>(player.position.y), player.width, player.height};
+        SDL_RenderCopy(game.getRenderer(), player.texture, nullptr, &playerRect);
+    }
 }
 
 void SceneMain::handleEvent(SDL_Event *event)
@@ -218,7 +220,26 @@ void SceneMain::updateBullet(float deltaTime)
         }
         else
         {
-            ++it;
+            bool hit = false;
+            for(auto enemy : enemies)
+            {
+                SDL_Rect enemyRect = {static_cast<int>(enemy->position.x), static_cast<int>(enemy->position.y), enemy->width, enemy->height};
+                
+                SDL_Rect bulletRect = {static_cast<int>(cur_bullet->position.x), static_cast<int>(cur_bullet->position.y), cur_bullet->width, cur_bullet->height};
+
+                if(SDL_HasIntersection(&bulletRect, &enemyRect))
+                {
+                    enemy->currentHealth -= cur_bullet->damage;
+                    delete cur_bullet;
+                    it = bullets.erase(it);
+                    hit = true;
+                    break;
+                }
+            }
+            if(!hit)
+            {
+                ++it;
+            }
         }
     }
 }
@@ -274,7 +295,15 @@ void SceneMain::updateEnemy(float deltaTime)
                 EnemyShootBullet(cur_enemy);
                 cur_enemy->lastFireTime = currentTime;
             }
-            ++it;
+            if(cur_enemy->currentHealth <= 0)
+            {
+                enemyExplode(cur_enemy);
+                it = enemies.erase(it);
+            }
+            else 
+            {
+                ++it;
+            }
         }
     }
 }
@@ -341,7 +370,19 @@ void SceneMain::updateEnemyBullet(float deltaTime)
         }
         else
         {
-            ++it;
+            SDL_Rect bulletRect = {static_cast<int>(cur_enemy_bullet->position.x), static_cast<int>(cur_enemy_bullet->position.y), cur_enemy_bullet->width, cur_enemy_bullet->height};
+            SDL_Rect playerRect = {static_cast<int>(player.position.x), static_cast<int>(player.position.y), player.width, player.height};
+
+            if(SDL_HasIntersection(&bulletRect, &playerRect))
+            {
+                player.currentHealth -= cur_enemy_bullet->damage;
+                delete cur_enemy_bullet;
+                it = enemyBullets.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
         }
     }
 }
@@ -361,3 +402,34 @@ void SceneMain::renderEnemyBullet()
     }
 }
 
+void SceneMain::updatePlayer(float deltaTime)
+{
+    if(isDead)
+    {
+        return;
+    }
+
+    // 更新玩家位置
+    if(player.currentHealth <= 0)
+    {
+        isDead = true;
+    }
+
+    for(auto enemy : enemies)
+    {
+        SDL_Rect enemyRect = {static_cast<int>(enemy->position.x), static_cast<int>(enemy->position.y), enemy->width, enemy->height};
+        SDL_Rect playerRect = {static_cast<int>(player.position.x), static_cast<int>(player.position.y), player.width, player.height};
+
+        if(SDL_HasIntersection(&enemyRect, &playerRect))
+        {
+            player.currentHealth -= 1;
+            enemy->currentHealth = 0;
+        }
+    }
+}
+
+
+void SceneMain::enemyExplode(Enemy* enemy)
+{
+    
+}
