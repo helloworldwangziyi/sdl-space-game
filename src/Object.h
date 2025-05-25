@@ -44,4 +44,15 @@ struct EnemyBullet{
     int damage = 1; // 子弹伤害
 };
 
+struct Explosion{
+    SDL_Texture* texture = nullptr;
+    SDL_FPoint position = {0, 0};
+    int width = 0;
+    int height = 0;
+    int currentFrame = 0; // 当前帧索引
+    int totalFrames = 0; // 总帧数
+    Uint32 startTime = 0; // 开始时间
+    Uint32 FPS = 10; // 帧率
+};
+
 #endif // OBJECT_H

@@ -41,6 +41,9 @@ public:
 
     void enemyExplode(Enemy* enemy);      // 敌机爆炸效果
 
+    void updateExplosions(float deltaTime);  // 更新爆炸动画
+    void renderExplosions();  
+
 
 private:
     Player player;
@@ -63,6 +66,9 @@ private:
     EnemyBullet enemyBullet;
     // 敌机子弹列表
     std::list<EnemyBullet*> enemyBullets;
+
+    Explosion explosion; // 爆炸动画模板
+    std::list<Explosion*> explosions; // 存储爆炸的列表
 
     bool isDead = false; // 玩家是否死亡
 
