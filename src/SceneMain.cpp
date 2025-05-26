@@ -104,6 +104,23 @@ void SceneMain::Init()
     SDL_QueryTexture(item.texture, NULL, NULL, &item.width, &item.height);
     item.width /= 4;
     item.height /= 4;
+
+    // 读取并播放背景音乐
+    bgm = Mix_LoadMUS("assets/assets/music/03_Racing_Through_Asteroids_Loop.ogg");
+    if(bgm == nullptr)
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Failed to load background music: %s", Mix_GetError());
+    }
+    Mix_PlayMusic(bgm, -1);
+
+    // 读取音效音源
+    sounds["player_shoot"] = Mix_LoadWAV("assets/assets/sound/laser-shoot4.wav");
+    sounds["enemy_shoot"] = Mix_LoadWAV("assets/assets/sound/xs_laser.wav");
+    sounds["enemy_explode"] = Mix_LoadWAV("assets/assets/sound/explosion3.wav");
+    sounds["player_explode"] = Mix_LoadWAV("assets/assets/sound/explosion1.wav");
+    sounds["get_item"] = Mix_LoadWAV("assets/assets/sound/eff5.wav");
+    sounds["hit"] = Mix_LoadWAV("assets/assets/sound/eff11.wav");
+
     
 }
 
@@ -188,7 +205,22 @@ void SceneMain::clean()
     {
         SDL_DestroyTexture(item.texture);
     }
-    
+
+    for(auto it : sounds)
+    {
+        if(it.second != nullptr)
+        {
+            Mix_FreeChunk(it.second);
+        }
+    }
+    sounds.clear();
+    // 清理音乐资源
+    if(bgm != nullptr)
+    {
+        Mix_FreeMusic(bgm);
+        Mix_HaltMusic();
+        bgm = nullptr;
+    }
 }
 
 void SceneMain::keyboardControl(float deltaTime)
@@ -248,6 +280,7 @@ void SceneMain::keyboardControl(float deltaTime)
 
 void SceneMain::shootBullet()
 {
+    Mix_PlayChannel(0, sounds["player_shoot"], 0);
     Bullet *newBullet = new Bullet(bullet);
     newBullet->position.x = player.position.x + player.width / 2 - newBullet->width / 2;
     newBullet->position.y = player.position.y;
@@ -280,6 +313,7 @@ void SceneMain::updateBullet(float deltaTime)
 
                 if(SDL_HasIntersection(&bulletRect, &enemyRect))
                 {
+                    Mix_PlayChannel(-1, sounds["hit"], 0);
                     enemy->currentHealth -= cur_bullet->damage;
                     delete cur_bullet;
                     it = bullets.erase(it);
@@ -370,6 +404,7 @@ void SceneMain::renderEnemy()
 
 void SceneMain::EnemyShootBullet(Enemy* enemy)
 {
+    Mix_PlayChannel(-1, sounds["enemy_shoot"], 0);
     // 创建敌机子弹
     EnemyBullet* newEnemyBullet = new EnemyBullet(enemyBullet);
     
@@ -428,6 +463,7 @@ void SceneMain::updateEnemyBullet(float deltaTime)
             {
                 player.currentHealth -= cur_enemy_bullet->damage;
                 delete cur_enemy_bullet;
+                Mix_PlayChannel(-1, sounds["hit"], 0);
                 it = enemyBullets.erase(it);
             }
             else
@@ -463,6 +499,7 @@ void SceneMain::updatePlayer(float deltaTime)
     // 更新玩家位置
     if(player.currentHealth <= 0)
     {
+        playerExplode();
         isDead = true;
     }
 
@@ -622,6 +659,7 @@ void SceneMain::playerGetItem(Item* item)
     // 根据物品类型处理
     if(item->type == ItemType::Life)
     {
+        Mix_PlayChannel(-1, sounds["get_item"], 0);
         player.currentHealth += 1;
         if(player.currentHealth > player.maxHealth)
         {
@@ -639,4 +677,18 @@ void SceneMain::renderItem()
         SDL_Rect itemRect = {static_cast<int>(it->position.x), static_cast<int>(it->position.y), it->width, it->height};
         SDL_RenderCopy(game.getRenderer(), it->texture, nullptr, &itemRect);
     }
+}
+
+
+void SceneMain::playerExplode()
+{
+    auto currentTime = SDL_GetTicks();
+    Explosion* newExplosion = new Explosion(explosion);
+    newExplosion->position = player.position;
+    newExplosion->startTime = currentTime;
+    explosions.push_back(newExplosion);
+    
+
+    Mix_PlayChannel(-1, sounds["player_explode"], 0);
+    
 }

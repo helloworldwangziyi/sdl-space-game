@@ -6,6 +6,8 @@
 #define GAME_H
 
 #include "Scene.h"
+#include <SDL_mixer.h>
+#include "Object.h"
 
 class Game
 {
@@ -30,6 +32,9 @@ public:
     SDL_Renderer* getRenderer() {return renderer;}
     int getWindowWidth() {return windowWidth;}
     int getWindowHeight() {return windowHeight;}
+
+    void updateBackground(float deltaTime); // 更新背景
+    void renderBackground(); // 渲染背景
 private:
     Game();
     // 删除拷贝构造函数
@@ -45,6 +50,10 @@ private:
     int FPS = 60; // 帧率
     Uint32 frameTime; // 帧时间
     float deltaTime; // 时间间隔
+
+    // 背景
+    Backgroud nearStars; // 近处的星星
+    Backgroud farStars; // 远处的星星
 };
 
 #endif //GAME_H

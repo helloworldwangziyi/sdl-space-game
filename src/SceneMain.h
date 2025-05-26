@@ -8,6 +8,8 @@
 #include "Object.h"
 #include <list>
 #include <random>
+#include <map>
+#include <SDL_mixer.h>
 
 class Game;
 
@@ -25,6 +27,7 @@ public:
     void keyboardControl(float deltaTime);
 
     void updatePlayer(float deltaTime); // 更新玩家
+    void playerExplode(); // 玩家爆炸
 
     void shootBullet(); // 发射子弹
     void updateBullet(float deltaTime); // 更新子弹
@@ -81,6 +84,9 @@ private:
     Item item;
     std::list<Item*> items;
 
+    // 音效
+    Mix_Music* bgm;
+    std::map<std::string, Mix_Chunk*> sounds; // 存储音效
 };
 
 #endif // SCENE_MAIN_H
