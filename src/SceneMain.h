@@ -42,7 +42,12 @@ public:
     void enemyExplode(Enemy* enemy);      // 敌机爆炸效果
 
     void updateExplosions(float deltaTime);  // 更新爆炸动画
-    void renderExplosions();  
+    void renderExplosions();
+
+    void dropItem(Enemy* enemy); // 掉落物品
+    void updateItem(float deltaTime); // 更新物品
+    void renderItem(); // 渲染物品
+    void playerGetItem(Item* item); // 玩家获取物品
 
 
 private:
@@ -71,6 +76,10 @@ private:
     std::list<Explosion*> explosions; // 存储爆炸的列表
 
     bool isDead = false; // 玩家是否死亡
+
+    // 物品
+    Item item;
+    std::list<Item*> items;
 
 };
 
