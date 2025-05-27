@@ -53,6 +53,9 @@ public:
     void playerGetItem(Item* item); // 玩家获取物品
 
 
+    void renderUI(); // 渲染UI
+
+
 private:
     Player player;
     Game &game;
@@ -87,6 +90,9 @@ private:
     // 音效
     Mix_Music* bgm;
     std::map<std::string, Mix_Chunk*> sounds; // 存储音效
+
+    // 血量图标
+    SDL_Texture* uiHealth;
 };
 
 #endif // SCENE_MAIN_H

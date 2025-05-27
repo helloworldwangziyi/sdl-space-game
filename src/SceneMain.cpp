@@ -50,6 +50,9 @@ void SceneMain::Render()
 
     // 渲染物品
     renderItem();
+
+    // 渲染UI
+    renderUI();
 }
 
 void SceneMain::handleEvent(SDL_Event *event)
@@ -120,6 +123,8 @@ void SceneMain::Init()
     sounds["player_explode"] = Mix_LoadWAV("assets/assets/sound/explosion1.wav");
     sounds["get_item"] = Mix_LoadWAV("assets/assets/sound/eff5.wav");
     sounds["hit"] = Mix_LoadWAV("assets/assets/sound/eff11.wav");
+
+    uiHealth = IMG_LoadTexture(game.getRenderer(), "assets/assets/image/Health UI Black.png");
 
     
 }
@@ -220,6 +225,12 @@ void SceneMain::clean()
         Mix_FreeMusic(bgm);
         Mix_HaltMusic();
         bgm = nullptr;
+    }
+
+    // 清理ui
+    if(uiHealth != nullptr)
+    {
+        SDL_DestroyTexture(uiHealth);
     }
 }
 
@@ -692,3 +703,27 @@ void SceneMain::playerExplode()
     Mix_PlayChannel(-1, sounds["player_explode"], 0);
     
 }
+
+void SceneMain::renderUI()
+{
+    int x = 10;
+    int y = 10;
+    int size = 32;
+    int offset = 40;
+    SDL_SetTextureColorMod(uiHealth, 100, 100, 100);
+
+    for(int i = 0; i < player.maxHealth; i++)
+    {
+        SDL_Rect rect = {x + i * offset, y, size, size};
+        SDL_RenderCopy(game.getRenderer(), uiHealth, nullptr, &rect);
+    }
+
+    SDL_SetTextureColorMod(uiHealth, 255, 255, 255);
+
+    for(int i = 0; i < player.currentHealth; i++)
+    {
+        SDL_Rect rect = {x + i * offset, y , size, size};
+        SDL_RenderCopy(game.getRenderer(), uiHealth, nullptr, &rect);
+    }
+}
+    
