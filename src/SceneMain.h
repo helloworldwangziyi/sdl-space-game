@@ -10,6 +10,7 @@
 #include <random>
 #include <map>
 #include <SDL_mixer.h>
+#include <SDL_ttf.h>
 
 class Game;
 
@@ -93,6 +94,10 @@ private:
 
     // 血量图标
     SDL_Texture* uiHealth;
+
+    // 字体
+    TTF_Font* scoreFont;
+    int score = 0;
 };
 
 #endif // SCENE_MAIN_H

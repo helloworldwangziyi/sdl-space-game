@@ -126,7 +126,15 @@ void SceneMain::Init()
 
     uiHealth = IMG_LoadTexture(game.getRenderer(), "assets/assets/image/Health UI Black.png");
 
-    
+    // 载入字体
+    // 初始化 SDL_ttf
+    if (TTF_Init() == -1) {
+        SDL_LogError(SDL_LOG_CATEGORY_ERROR, "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
+    }
+    scoreFont = TTF_OpenFont("assets/assets/font/VonwaonBitmap-12px.ttf", 24);
+    if (scoreFont == nullptr) {
+        SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Failed to load font: %s", TTF_GetError());
+    }
 }
 
 void SceneMain::clean()
@@ -231,6 +239,13 @@ void SceneMain::clean()
     if(uiHealth != nullptr)
     {
         SDL_DestroyTexture(uiHealth);
+    }
+
+    // 清理字体
+    if(scoreFont != nullptr)
+    {
+        TTF_CloseFont(scoreFont);
+        scoreFont = nullptr;
     }
 }
 
@@ -544,6 +559,8 @@ void SceneMain::enemyExplode(Enemy* enemy)
     }
     delete enemy;
 
+    score += 10;
+
 }
 
 
@@ -668,6 +685,7 @@ void SceneMain::updateItem(float deltaTime)
 void SceneMain::playerGetItem(Item* item)
 {
     // 根据物品类型处理
+    score += 5;
     if(item->type == ItemType::Life)
     {
         Mix_PlayChannel(-1, sounds["get_item"], 0);
@@ -725,5 +743,28 @@ void SceneMain::renderUI()
         SDL_Rect rect = {x + i * offset, y , size, size};
         SDL_RenderCopy(game.getRenderer(), uiHealth, nullptr, &rect);
     }
+
+    std::string text = "SCORE: " + std::to_string(score);
+    SDL_Color color = {255, 255, 255, 255};
+    
+    SDL_Surface* surface = TTF_RenderUTF8_Solid(scoreFont, text.c_str(), color);
+    if (surface == nullptr) {
+        SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Failed to render text: %s", TTF_GetError());
+        return;
+    }
+    
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(game.getRenderer(), surface);
+    if (texture == nullptr) {
+        SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Failed to create texture: %s", SDL_GetError());
+        SDL_FreeSurface(surface);
+        return;
+    }
+
+    SDL_Rect rect = {game.getWindowWidth() - 10 - surface->w, 10, surface->w, surface->h};
+    SDL_RenderCopy(game.getRenderer(), texture, nullptr, &rect);
+
+    SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
+    
 }
     
