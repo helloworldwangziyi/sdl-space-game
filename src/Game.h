@@ -8,6 +8,8 @@
 #include "Scene.h"
 #include <SDL_mixer.h>
 #include "Object.h"
+#include "SceneTitle.h"
+#include <string>
 
 class Game
 {
@@ -35,6 +37,10 @@ public:
 
     void updateBackground(float deltaTime); // 更新背景
     void renderBackground(); // 渲染背景
+
+
+    // 渲染文字函数
+    void renderTextCentered(std::string text, float posY, bool isTitle);
 private:
     Game();
     // 删除拷贝构造函数
@@ -54,6 +60,9 @@ private:
     // 背景
     Backgroud nearStars; // 近处的星星
     Backgroud farStars; // 远处的星星
+
+    TTF_Font* titleFont;
+    TTF_Font* textFont;
 };
 
 #endif //GAME_H

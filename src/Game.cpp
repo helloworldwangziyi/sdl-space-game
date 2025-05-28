@@ -6,6 +6,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
+
 Game::Game()
 {
 
@@ -121,18 +122,18 @@ void Game::init()
     farStars.height /= 2;
     farStars.width /= 2;
     farStars.speed = 20;
-}
 
-void Game::changeScene(Scene* scene)
-{
-    if (currentScene != nullptr)
-    {
-        currentScene->clean();
-        delete currentScene;
+    titleFont = TTF_OpenFont("assets/assets/font/VonwaonBitmap-16px.ttf", 64);
+    textFont = TTF_OpenFont("assets/assets/font/VonwaonBitmap-16px.ttf", 32);
+    if (titleFont == nullptr || textFont == nullptr) {
+        SDL_LogError(SDL_LOG_CATEGORY_ERROR, "TTF_OpenFont: %s\n", TTF_GetError());
+        isRunning = false;
     }
-    currentScene = scene;
+
+    currentScene = new SceneTitle();
     currentScene->Init();
 }
+
 
 void Game::handleEvent(SDL_Event *event)
 {
@@ -202,3 +203,33 @@ void Game::renderBackground()
     }
 }
 
+void Game::changeScene(Scene *scene)
+{
+    if (currentScene != nullptr)
+    {
+        currentScene->clean();
+        delete currentScene;
+    }
+    currentScene = scene;
+    currentScene->Init();
+}
+
+void Game::renderTextCentered(std::string text, float posY, bool isTitle)
+{
+    SDL_Color color = {255, 255, 255, 255};
+    SDL_Surface *surface;
+    if (isTitle){
+        surface = TTF_RenderUTF8_Solid(titleFont, text.c_str(), color);
+    }else{
+        surface = TTF_RenderUTF8_Solid(textFont, text.c_str(), color);
+    }
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+    int y = static_cast<int>((getWindowHeight() - surface->h) * posY);
+    SDL_Rect rect = {getWindowWidth() / 2 - surface->w / 2,
+                     y,
+                     surface->w,
+                     surface->h};
+    SDL_RenderCopy(renderer, texture, NULL, &rect);
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(surface);
+}
