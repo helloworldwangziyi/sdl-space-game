@@ -6,6 +6,7 @@
 
 #include "Scene.h"
 #include "Object.h"
+#include "SceneEnd.h"
 #include <list>
 #include <random>
 #include <map>
@@ -56,6 +57,8 @@ public:
 
     void renderUI(); // 渲染UI
 
+    void changeSceneDelayed(float deltaTime, float delay);
+
 
 private:
     Player player;
@@ -98,6 +101,8 @@ private:
     // 字体
     TTF_Font* scoreFont;
     int score = 0;
+
+    float timerEnd = 0.0f;
 };
 
 #endif // SCENE_MAIN_H

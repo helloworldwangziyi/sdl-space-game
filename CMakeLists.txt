@@ -28,6 +28,8 @@ add_executable(${TARGET}
         src/Scene.cpp
         src/SceneTitle.h
         src/SceneTitle.cpp
+        src/SceneEnd.h
+        src/SceneEnd.cpp
 )
 
 target_link_libraries(${TARGET} 

@@ -37,10 +37,11 @@ public:
 
     void updateBackground(float deltaTime); // 更新背景
     void renderBackground(); // 渲染背景
-
-
     // 渲染文字函数
     void renderTextCentered(std::string text, float posY, bool isTitle);
+
+    void setFinalScore(int score) {finalScore = score;}
+    int getFinalScore() {return finalScore;}
 private:
     Game();
     // 删除拷贝构造函数
@@ -63,6 +64,8 @@ private:
 
     TTF_Font* titleFont;
     TTF_Font* textFont;
+
+    int finalScore = 0;
 };
 
 #endif //GAME_H
